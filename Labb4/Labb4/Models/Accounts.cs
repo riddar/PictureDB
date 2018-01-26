@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace Labb4.Models
 {
     class Accounts
     {
-        [BsonId]
+        [JsonProperty("_id")]
         public string _id { get; set; }
         [JsonProperty("username")]
         public string Username { get; set; }

@@ -20,7 +20,6 @@ namespace Labb4.App_Start
         public Database Database { get; set; }
         public IEnumerable<DocumentCollection> Collections { get; set; }
         public DocumentCollection Collection { get; set; }
-        public IEnumerable<Document> Documents { get; set; }
 
         public MongoContext(string CollectionName)
         {
@@ -40,7 +39,7 @@ namespace Labb4.App_Start
                                   where col.Id == CollectionName
                                   select col).AsEnumerable().FirstOrDefault();
 
-                    Documents = from doc in Client.CreateDocumentQuery(Collection.SelfLink) select doc;
+                    
                 }
             }
             catch (Exception e)
