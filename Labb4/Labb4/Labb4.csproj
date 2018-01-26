@@ -55,7 +55,7 @@
     <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\AllowedPicturesControllers.cs" />
     <Compile Include="Controllers\PicturesControllers.cs" />
-    <Compile Include="Models\Accounts.cs" />
+    <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AllowedPictures.cs" />
     <Compile Include="Models\Pictures.cs" />
     <Compile Include="Program.cs" />

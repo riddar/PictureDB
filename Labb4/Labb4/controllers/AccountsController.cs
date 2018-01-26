@@ -2,6 +2,7 @@
 using Labb4.Models;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,46 +14,45 @@ namespace Labb4.Controllers
     public class AccountsController
     {  
         MongoContext Context = new MongoContext("Accounts");
-        Accounts accounts = new Accounts();
+        Account accounts = new Account();
 
-        public Document CreateOrUpdateDocumentById(string _Id, string username, string email, List<string> pictureId)
-        {
-            Document newDocument = new Document { Id = _Id, new username, new email, new pictureId };
-
-            
-
-            Document document = null;
+        public Account CreateAccount(string _Id, string username, string email, List<string> pictureId)
+        { 
             try
             {
-                document = (from doc in Context.Client.CreateDocumentQuery(Context.Database.SelfLink)
-                                where doc.Id == _Id
-                                select doc).FirstOrDefault();
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
-            finally
-            {
-                if (document == null)
+                //Account document = (from doc in Context.Client.CreateDocumentQuery<Account>(Context.Database.SelfLink)
+                //                     where doc._id == _Id
+                //                     select doc).FirstOrDefault();
+
+                Account account = Context.Client.CreateDocumentQuery<Account>(Context.Collection.DocumentsLink)
+                    .Where(d => d._id == _Id).AsEnumerable().FirstOrDefault();
+
+                if (account == null)
                 {
-                    Context.Collection..Add(score);
+                    Account newAccount = new Account() { };
+                    var query = Context.Client.CreateDocumentQuery<Account>(new Uri(Context.Collection.SelfLink), newAccount);
+                        
                 }
                 else
                 {
-                    return document;
+                    return account;
                 }
+            }
+            catch(Exception e)
+            {
+                return null;
+                throw e;
             }
         }
 
-        public IEnumerable<Document> GetAllAccountsDocuments()
+        public IEnumerable<Account> GetAllAccounts()
         {
            
 
             try
             {
-                var Documents = (from doc in Context.Client.CreateDocumentQuery(Context.Collection.SelfLink) select doc).AsEnumerable();
-                return Documents;
+                IEnumerable<Account> account = Context.Client.CreateDocumentQuery<Account>(Context.Collection.DocumentsLink).AsEnumerable();
+                return account;
             }
             catch (Exception)
             {
@@ -61,14 +61,14 @@ namespace Labb4.Controllers
             
         }
 
-        public Document GetAccountDocumentById(string _id)
+        public Account GetAccountById(string _Id)
         {
             try
             {
-                var document = (from doc in Context.Client.CreateDocumentQuery(Context.Database.SelfLink)
-                                where doc.Id == _id
-                                select doc).FirstOrDefault();
-                return document;
+                Account account = Context.Client.CreateDocumentQuery<Account>(Context.Collection.DocumentsLink)
+                    .Where(d => d._id == _Id).AsEnumerable().FirstOrDefault();
+
+                return account;
             }
             catch (Exception e)
             {
@@ -78,14 +78,25 @@ namespace Labb4.Controllers
             
         }
 
-        public Document UpdateAccountDocument(string _id)
+        public Account UpdateAccountDocument(string _id)
         {
 
         }
 
-        public Document DeleteAccountDocument(string _id)
+        public Account DeleteAccountDocument(string _id)
         {
+            try
+            {
+                Account account = Context.Client<Account>(Context.Collection.DocumentsLink)
+                    .Where(d => d._id == _Id).AsEnumerable().FirstOrDefault();
 
+                var account = client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(Context.Database.SelfLink, Context.Collection.SelfLink, _id);
+            }
+            catch (Exception e)
+            {
+                return null;
+                throw e;  
+            }
         }
     }
 }
