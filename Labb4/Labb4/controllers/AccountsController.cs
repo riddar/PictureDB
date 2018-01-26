@@ -34,7 +34,7 @@ namespace Labb4.Controllers
 
         public Document GetAccountDocument()
         {
-            var document = (from doc in Ac)
+            var document = (from doc in Context.Client.createdoc)
         }
     }
 }

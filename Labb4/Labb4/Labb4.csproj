@@ -53,9 +53,11 @@
   <ItemGroup>
     <Compile Include="App_Start\MongoContext.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
-    <Compile Include="Models\Account.cs" />
+    <Compile Include="Controllers\AllowedPicturesControllers.cs" />
+    <Compile Include="Controllers\PicturesControllers.cs" />
+    <Compile Include="Models\Accounts.cs" />
     <Compile Include="Models\AllowedPictures.cs" />
-    <Compile Include="Models\Picture.cs" />
+    <Compile Include="Models\Pictures.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
