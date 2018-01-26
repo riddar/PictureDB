@@ -16,6 +16,6 @@ namespace Labb4.Models
         [JsonProperty("email")]
         public string Email { get; set; }
         [JsonProperty("pictureId")]
-        public List<Pictures> PictureId { get; set; }
+        public List<string> PictureId { get; set; }
     }
 }
