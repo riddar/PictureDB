@@ -7,13 +7,15 @@ using System.Threading.Tasks;
 
 namespace Labb4.Models
 {
-    class Pictures
+    public class Picture
     {
-        [JsonProperty("_id")]
-        public string _id { get; set; }
+        [JsonProperty("_Id")]
+        public string _Id { get; set; }
         [JsonProperty("PictureName")]
         public string PictureName { get; set; }
         [JsonProperty("PictureUrl")]
         public string PictureUrl { get; set; }
+        [JsonProperty("Valid")]
+        public bool Valid { get; set; }
     }
 }

@@ -9,12 +9,10 @@ namespace Labb4
 {
     class Program
     {
-        AccountsController accountsController = new AccountsController();
-
-
+        AccountsController accounts = new AccountsController();
         static void Main(string[] args)
         {
-            var accounts = accountsController().GetAllAccounts();
+            accounts.GetAllAccounts();
         }
     }
 }

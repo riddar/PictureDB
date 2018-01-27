@@ -10,8 +10,8 @@ namespace Labb4.Models
 {
     public class Account
     {
-        [JsonProperty("_id")]
-        public string _id { get; set; }
+        [JsonProperty("_Id")]
+        public string _Id { get; set; }
         [JsonProperty("username")]
         public string Username { get; set; }
         [JsonProperty("email")]

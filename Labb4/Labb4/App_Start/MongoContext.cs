@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Documents;
+﻿using Labb4.Models;
+using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using System;
 using System.Collections.Generic;
@@ -38,8 +39,6 @@ namespace Labb4.App_Start
                     Collection = (from col in Client.CreateDocumentCollectionQuery(Database.SelfLink)
                                   where col.Id == CollectionName
                                   select col).AsEnumerable().FirstOrDefault();
-
-                    
                 }
             }
             catch (Exception e)
