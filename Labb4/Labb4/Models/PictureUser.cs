@@ -8,15 +8,15 @@ using System.Threading.Tasks;
 
 namespace Labb4.Models
 {
-    public class Account
+    public class PictureUser
     {
-        [JsonProperty("_Id")]
-        public string _Id { get; set; }
-        [JsonProperty("username")]
+        [JsonProperty("id")]
+        public string Id { get; set; }
+        [JsonProperty("Username")]
         public string Username { get; set; }
-        [JsonProperty("email")]
+        [JsonProperty("Email")]
         public string Email { get; set; }
-        [JsonProperty("pictureId")]
+        [JsonProperty("PictureId")]
         public List<string> PictureId { get; set; }
     }
 }

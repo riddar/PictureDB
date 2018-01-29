@@ -12,39 +12,32 @@ namespace Labb4.App_Start
 {
     public class MongoContext
     {
-        private static readonly string EndpointUrl = ConfigurationManager.AppSettings["EndpointUrl"];
-        private static readonly string Authkey = ConfigurationManager.AppSettings["AuthKey"];
-        private static readonly string DatabaseName = ConfigurationManager.AppSettings["DatabaseName"];
+        public readonly string EndpointUrl = ConfigurationManager.AppSettings["EndpointUrl"];
+        public readonly string Authkey = ConfigurationManager.AppSettings["AuthKey"];
+        public readonly string DatabaseName = ConfigurationManager.AppSettings["DatabaseName"];
 
-        public DocumentClient Client { get; set; }
-        public IEnumerable<Database> Databases { get; set; }
-        public Database Database { get; set; }
-        public IEnumerable<DocumentCollection> Collections { get; set; }
-        public DocumentCollection Collection { get; set; }
-
-        public MongoContext(string CollectionName)
+        public Database GetDatabaseByName(string databaseName)
         {
-            try
+            using (DocumentClient Client = new DocumentClient(new Uri(EndpointUrl), Authkey))
             {
-                using (Client = new DocumentClient(new Uri(EndpointUrl), Authkey))
-                {
-                    Databases = from db in Client.CreateDatabaseQuery() select db;
-
-                    Database = (from db in Client.CreateDatabaseQuery()
-                                where db.Id == DatabaseName
+                var Database = (from db in Client.CreateDatabaseQuery()
+                                where db.Id == databaseName
                                 select db).AsEnumerable().FirstOrDefault();
 
-                    Collections = from col in Client.CreateDocumentCollectionQuery(Database.SelfLink) select col;
+                return Database;
+            }
+        }
 
-                    Collection = (from col in Client.CreateDocumentCollectionQuery(Database.SelfLink)
+        public DocumentCollection GetCollectionByName(string CollectionName)
+        {
+            using (DocumentClient Client = new DocumentClient(new Uri(EndpointUrl), Authkey))
+            {
+                var Collection = (from col in Client.CreateDocumentCollectionQuery(GetDatabaseByName(DatabaseName).SelfLink)
                                   where col.Id == CollectionName
                                   select col).AsEnumerable().FirstOrDefault();
-                }
+                return Collection;
             }
-            catch (Exception e)
-            {
-                throw e;
-            }
+
         }
     }
 }

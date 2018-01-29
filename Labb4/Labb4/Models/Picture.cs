@@ -9,13 +9,13 @@ namespace Labb4.Models
 {
     public class Picture
     {
-        [JsonProperty("_Id")]
-        public string _Id { get; set; }
-        [JsonProperty("PictureName")]
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+        [JsonProperty(PropertyName = "PictureName")]
         public string PictureName { get; set; }
-        [JsonProperty("PictureUrl")]
+        [JsonProperty(PropertyName = "PictureUrl")]
         public string PictureUrl { get; set; }
-        [JsonProperty("Valid")]
+        [JsonProperty(PropertyName = "Valid")]
         public bool Valid { get; set; }
     }
 }

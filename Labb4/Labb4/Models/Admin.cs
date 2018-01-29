@@ -9,8 +9,8 @@ namespace Labb4.Models
 {
     class Admin
     {
-        [JsonProperty("_Id")]
-        public string _Id { get; set; }
+        [JsonProperty("id")]
+        public string Id { get; set; }
         [JsonProperty("AdminName")]
         public string AdminName { get; set; }
         [JsonProperty("Password")]

@@ -2,36 +2,39 @@
 using Labb4.Models;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Labb4.Controllers
 {
-    class AdminController
+    public class PictureUserController
     {
         MongoContext Context = new MongoContext();
-        Admin admin = new Admin();
+        PictureUser pictureUser = new PictureUser();
 
-        public Admin CreateAdmin(string id, string adminName, string password)
+        public PictureUser CreatePictureUser(string id, string userName, string email, List<string> pictureId)
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admin").SelfLink)
+                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
                         .Where(d => d.Id == id).AsEnumerable().FirstOrDefault();
-                    if (admin == null)
+
+                    if (pictureUser == null)
                     {
-                        Admin newAdmin = new Admin() { Id = id, AdminName = adminName, Password = password };
-                        Client.CreateDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, newAdmin);
-                        return newAdmin;
+                        PictureUser newPictureUser = new PictureUser() { Id = id, Username = userName, Email = email, PictureId = pictureId };
+                        Client.CreateDocumentAsync(Context.GetCollectionByName("PictureUsers").SelfLink, newPictureUser);
+                        return newPictureUser;
                     }
                     else
                     {
-                        return admin;
+                        return pictureUser;
                     }
                 }
             }
@@ -42,17 +45,17 @@ namespace Labb4.Controllers
             }
         }
 
-        public IEnumerable<Admin> GetAllAdmin()
+        public IEnumerable<PictureUser> GetAllPictureUser()
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    List<Admin> list = new List<Admin>();
-                    IEnumerable<Admin> admins = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink).AsEnumerable();
-                    foreach (var admin in admins)
+                    List<PictureUser> list = new List<PictureUser>();
+                    IEnumerable<PictureUser> pictureUsers = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink).AsEnumerable();
+                    foreach (var pictureUser in pictureUsers )
                     {
-                        list.Add(admin);
+                        list.Add(pictureUser);
                     }
                     return list;
                 }
@@ -64,16 +67,16 @@ namespace Labb4.Controllers
             }
         }
 
-        public Admin GetAdminByAdminName(string adminName)
+        public PictureUser GetPictureUserByUserName(string userName)
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink)
-                        .Where(d => d.AdminName == adminName).AsEnumerable().FirstOrDefault();
+                    PictureUser pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
+                                            .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
 
-                    return admin;
+                    return pictureUser;
                 }
             }
             catch (Exception e)
@@ -89,7 +92,7 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    return Client.CreateDocumentQuery(Context.GetCollectionByName("Admins").SelfLink)
+                    return Client.CreateDocumentQuery(Context.GetCollectionByName("PictureUser").SelfLink)
                        .Where(D => D.Id == id)
                        .AsEnumerable()
                        .First();
@@ -102,21 +105,22 @@ namespace Labb4.Controllers
 
         }
 
-        public Admin UpdateAdminDocument(string adminName, string password)
+        public PictureUser UpdatePictureUserDocument(string userName, string email, List<string> pictureId)
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink)
-                        .Where(d => d.AdminName == adminName).AsEnumerable().FirstOrDefault();
+                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
+                        .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
 
-                    if (admin != null)
+                    if (pictureUser != null)
                     {
-                        admin.AdminName = adminName;
-                        admin.Password = password;
-                        Client.ReplaceDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, admin);
-                        return admin;
+                        pictureUser.Username = userName;
+                        pictureUser.Email = email;
+                        pictureUser.PictureId = pictureId;
+                        Client.ReplaceDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, pictureUser);
+                        return pictureUser;
                     }
                     else
                     {
@@ -133,19 +137,19 @@ namespace Labb4.Controllers
             }
         }
 
-        public void DeleteAdminByAdminName(string adminName)
+        public void DeletePictureUserByUserName(string userName)
         {
 
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink)
-                    .Where(d => d.AdminName == adminName).AsEnumerable().FirstOrDefault();
+                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
+                    .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
 
-                    Document document = GetDocumentById(admin.Id);
+                    Document document = GetDocumentById(pictureUser.Id);
 
-                    if (admin != null)
+                    if (pictureUser != null)
                     {
                         Client.DeleteDocumentAsync(document.SelfLink);
                     }

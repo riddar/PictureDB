@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Labb4.Controllers;
+using Labb4.Views;
 
 namespace Labb4
 {
-    class Program
+    public class Program
     {
-        AccountsController accounts = new AccountsController();
-        static void Main(string[] args)
+       
+        public static void Main(string[] args)
         {
-            accounts.GetAllAccounts();
+            MainView views = new MainView();
         }
     }
 }
