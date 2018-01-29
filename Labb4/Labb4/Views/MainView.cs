@@ -1,5 +1,4 @@
-﻿using Labb4.Controllers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,74 +6,58 @@ using System.Threading.Tasks;
 
 namespace Labb4.Views
 {
-    public class MainView
+    class MainView
     {
-        private PictureControllers Picture = new PictureControllers();
-        AdminController Administator = new AdminController();
-        private PictureUserController PictureUser = new PictureUserController();
-        
         public MainView()
         {
-
-
-
-
+            Menu();
         }
 
-        public void PrintAllUsers()
+        public void Header()
         {
-            var pictureUsers = PictureUser.GetAllPictureUser();
-            foreach (var pictureUser in pictureUsers)
+            Console.WriteLine("PictureDB");
+        }
+
+        public void Footer()
+        {
+            Console.WriteLine("-------------------------------------------------------------------------------------------");
+        }
+
+        public void Menu()
+        {
+            Header();
+            Console.WriteLine("---------------------------");
+            Console.WriteLine($"     Main Menu           |");
+            Console.WriteLine("|     1.User              |");
+            Console.WriteLine("|     2.Admin             |");
+            Console.WriteLine("|     3.Quit              |");
+            Console.WriteLine("---------------------------");
+            Footer();
+            try
             {
-                Console.WriteLine("-------------------");
-                Console.WriteLine(pictureUser.Id);
-                Console.WriteLine(pictureUser.Username);
-                Console.WriteLine(pictureUser.Email);
-                foreach (var pictureid in pictureUser.PictureId)
+                bool KeepGoing = true;
+                do
                 {
-                    var picture = Picture.GetPictureById(pictureid);
-                    Console.WriteLine(picture.PictureName);
-                }
+                    switch (Console.ReadKey(true).Key)
+                    {
+                        case ConsoleKey.D1:
+                            UsersView usersView = new UsersView();
+                            break;
+                        case ConsoleKey.D2:
+                            AdminView adminView = new AdminView();
+                            break;
+                        case ConsoleKey.D6:
+                            KeepGoing = false;
+                            break;
+                        default:
+                            break;
+                    }
+                } while (KeepGoing != false);
             }
-            Console.ReadKey();
-        }
-
-        public void PrintAllAdmins()
-        {
-            var admins = Administator.GetAllAdmin();
-            foreach (var admin in admins)
+            catch (Exception e)
             {
-                Console.WriteLine("-------------------");
-                Console.WriteLine(admin.Id);
-                Console.WriteLine(admin.AdminName);
-                Console.WriteLine(admin.Password);
+                Console.WriteLine(e);
             }
-            Console.ReadKey();
-
-        }
-
-        public void PrintAllPictures()
-        {
-            var pictures = Picture.GetAllPictures();
-            foreach (var picture in pictures)
-            {
-                Console.WriteLine("-------------------");
-                Console.WriteLine(picture.Id);
-                Console.WriteLine(picture.PictureName);
-                Console.WriteLine(picture.PictureUrl);
-                Console.WriteLine(picture.Valid);
-            }
-            Console.ReadKey();
-        }
-
-        public void Users()
-        {
-
-        }
-
-        public void Admin()
-        {
-
         }
     }
 }

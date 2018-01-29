@@ -17,18 +17,18 @@ namespace Labb4.Controllers
         MongoContext Context = new MongoContext();
         PictureUser pictureUser = new PictureUser();
 
-        public PictureUser CreatePictureUser(string id, string userName, string email, List<string> pictureId)
+        public PictureUser CreatePictureUser(string userName, string email, List<string> pictureId)
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
                     pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
-                        .Where(d => d.Id == id).AsEnumerable().FirstOrDefault();
+                        .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
 
                     if (pictureUser == null)
                     {
-                        PictureUser newPictureUser = new PictureUser() { Id = id, Username = userName, Email = email, PictureId = pictureId };
+                        PictureUser newPictureUser = new PictureUser() { Username = userName, Email = email, PictureId = pictureId };
                         Client.CreateDocumentAsync(Context.GetCollectionByName("PictureUsers").SelfLink, newPictureUser);
                         return newPictureUser;
                     }
@@ -73,7 +73,7 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    PictureUser pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
+                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
                                             .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
 
                     return pictureUser;
@@ -137,7 +137,7 @@ namespace Labb4.Controllers
             }
         }
 
-        public void DeletePictureUserByUserName(string userName)
+        public PictureUser DeletePictureUserByUserName(string userName)
         {
 
             try
@@ -153,6 +153,8 @@ namespace Labb4.Controllers
                     {
                         Client.DeleteDocumentAsync(document.SelfLink);
                     }
+
+                    return pictureUser;
                 }
 
             }
@@ -161,5 +163,7 @@ namespace Labb4.Controllers
                 throw e;
             }
         }
+
+        
     }
 }

@@ -12,22 +12,22 @@ using System.Threading.Tasks;
 
 namespace Labb4.Controllers
 {
-    public class PictureControllers
+    public class PictureController
     {
         MongoContext Context = new MongoContext();
         Picture picture = new Picture();
 
-        public Picture CreatePicture(string _id, string pictureName, string pictureUrl)
+        public Picture CreatePicture(string pictureName, string pictureUrl)
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
                     var picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
-                        .Where(d => d.Id == _id).AsEnumerable().FirstOrDefault();
+                        .Where(d => d.PictureName == pictureName).AsEnumerable().FirstOrDefault();
                     if (picture == null)
                     {
-                        Picture newPicture = new Picture() { Id = _id, PictureName = pictureName, PictureUrl = pictureUrl, Valid = false };
+                        Picture newPicture = new Picture() {PictureName = pictureName, PictureUrl = pictureUrl, Valid = false };
                         Client.CreateDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, newPicture);
                         return newPicture;
                     }
