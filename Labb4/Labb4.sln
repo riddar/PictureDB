@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2026
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labb4", "Labb4\Labb4.csproj", "{5BA42979-A083-4B3F-96D1-84912DA3C8B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PictureFunction", "PictureFunction\PictureFunction.csproj", "{725DED19-9A20-4B22-8DCD-49A50FB9460E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PictureFunction", "PictureFunction\PictureFunction.csproj", "{CAFBF59A-E2A1-4BE2-BDAE-120E692C16CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{5BA42979-A083-4B3F-96D1-84912DA3C8B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5BA42979-A083-4B3F-96D1-84912DA3C8B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5BA42979-A083-4B3F-96D1-84912DA3C8B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{725DED19-9A20-4B22-8DCD-49A50FB9460E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{725DED19-9A20-4B22-8DCD-49A50FB9460E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{725DED19-9A20-4B22-8DCD-49A50FB9460E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{725DED19-9A20-4B22-8DCD-49A50FB9460E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAFBF59A-E2A1-4BE2-BDAE-120E692C16CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAFBF59A-E2A1-4BE2-BDAE-120E692C16CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAFBF59A-E2A1-4BE2-BDAE-120E692C16CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAFBF59A-E2A1-4BE2-BDAE-120E692C16CA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
