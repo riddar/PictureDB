@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Labb4.App_Start
 {
-    public class MongoContext
+    public class CosmosDBContext
     {
         public readonly string EndpointUrl = ConfigurationManager.AppSettings["EndpointUrl"];
         public readonly string Authkey = ConfigurationManager.AppSettings["AuthKey"];
@@ -37,7 +37,6 @@ namespace Labb4.App_Start
                                   select col).AsEnumerable().FirstOrDefault();
                 return Collection;
             }
-
         }
     }
 }

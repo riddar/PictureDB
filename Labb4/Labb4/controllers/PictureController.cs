@@ -14,7 +14,7 @@ namespace Labb4.Controllers
 {
     public class PictureController
     {
-        MongoContext Context = new MongoContext();
+        CosmosDBContext Context = new CosmosDBContext();
         Picture picture = new Picture();
 
         public Picture CreatePicture(string pictureName, string pictureUrl)

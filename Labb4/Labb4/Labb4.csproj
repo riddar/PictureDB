@@ -33,6 +33,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Labb4.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Azure.Documents.Client, Version=1.19.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.DocumentDB.1.19.1\lib\net45\Microsoft.Azure.Documents.Client.dll</HintPath>
@@ -51,7 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\MongoContext.cs" />
+    <Compile Include="App_Start\CosmosDBContext.cs" />
     <Compile Include="Controllers\PictureUserController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\PictureController.cs" />

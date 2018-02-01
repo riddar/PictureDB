@@ -12,7 +12,7 @@ namespace Labb4.Controllers
 {
     class AdminController
     {
-        MongoContext Context = new MongoContext();
+        CosmosDBContext Context = new CosmosDBContext();
         Admin admin = new Admin();
 
         public Admin CreateAdmin(string id, string adminName, string password)

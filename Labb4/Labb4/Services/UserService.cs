@@ -12,7 +12,7 @@ namespace Labb4.Services
 {
     public class UserService
     {
-        MongoContext Context = new MongoContext();
+        CosmosDBContext Context = new CosmosDBContext();
         PictureController pictureController = new PictureController();
         PictureUserController pictureUserController = new PictureUserController();
         PictureUser pictureUser = new PictureUser();
