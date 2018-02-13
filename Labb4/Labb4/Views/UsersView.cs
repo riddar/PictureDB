@@ -47,8 +47,8 @@ namespace Labb4.Views
             Console.WriteLine($"      {name}             |");
             Console.WriteLine("|     1.Create Picture    |");
             Console.WriteLine("|     2.Add Picture       |");
-            Console.WriteLine("|     3.Update Picture    |");
-            Console.WriteLine("|     4.Remove Picture    |");
+            Console.WriteLine("|     3.Remove Picture    |");
+            Console.WriteLine("|     4.Update Picture    |");
             Console.WriteLine("|     5.Show pictures     |");
             Console.WriteLine("|     6.return            |");
             Console.WriteLine("---------------------------");
@@ -68,10 +68,10 @@ namespace Labb4.Views
                             PrintAddPicture(name);
                             break;
                         case ConsoleKey.D3:
-                            PrintUpdatePicture(name);
+                            PrintRemovePicture(name);
                             break;
                         case ConsoleKey.D4:
-                            //printRemovePicture(name);
+                            PrintUpdatePicture(name);
                             break;
                         case ConsoleKey.D5:
                             PrintAllPictures(name);
@@ -93,67 +93,115 @@ namespace Labb4.Views
 
         public void PrintCreatePicture(string user)
         {
-            Console.WriteLine("-----------------------------------");
-            Console.WriteLine("what name would you like to give the picture?");
-            Console.Write("PictureName: ");
-            var pictureName = Console.ReadLine();
-            Console.WriteLine("what is the Picture link you want to add?");
-            Console.Write("PictureUrl: ");
-            var pictureUrl = Console.ReadLine();
-            var valid = service.AddNewPictureToUser(user, pictureName, pictureUrl);
-            if (valid != null)
-                Console.WriteLine($"{valid.PictureName} Created!");
-            else
-                Console.WriteLine($"{valid.PictureName} already Created.");
-            Console.ReadKey();
+            try
+            {
+                Console.WriteLine("-----------------------------------");
+                Console.WriteLine("what name would you like to give the picture?");
+                Console.Write("PictureName: ");
+                var pictureName = Console.ReadLine();
+                Console.WriteLine("what is the Picture link you want to add?");
+                Console.Write("PictureUrl: ");
+                var pictureUrl = Console.ReadLine();
+                var valid = service.AddNewPictureToUser(user, pictureName, pictureUrl);
+                if (valid != null)
+                    Console.WriteLine($"{valid.PictureName} Created!");
+                else
+                    Console.WriteLine($"{valid.PictureName} already Created.");
+                Console.ReadKey();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            
         }
 
         public void PrintAddPicture(string user)
         {
-            Console.WriteLine("-----------------------------------");
-            Console.WriteLine("Which picture would you like to add to the list?");
-            Console.Write("picture name: ");
-            var pictureName = Console.ReadLine();
+            try
+            {
+                Console.WriteLine("-----------------------------------");
+                Console.WriteLine("Which picture would you like to add to the list?");
+                Console.Write("picture name: ");
+                var pictureName = Console.ReadLine();
 
-            var valid = service.AddExistingPictureToPictureUserByUserName(user, pictureName);
+                var valid = service.AddExistingPictureToPictureUserByUserName(user, pictureName);
 
-            if (valid != null)
-                Console.WriteLine($"{valid.PictureName} Added!");
-            else
-                Console.WriteLine($"{valid.PictureName} already Added.");
-            Console.ReadKey();
+                if (valid != null)
+                    Console.WriteLine($"{valid.PictureName} Added!");
+                else
+                    Console.WriteLine($"{valid.PictureName} already Added.");
+                Console.ReadKey();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            
+        }
+
+        public void PrintRemovePicture(string user)
+        {
+            try
+            {
+                Console.WriteLine("-----------------------------------");
+                Console.WriteLine("Which picture would you like to remove from the list?");
+                Console.Write("picture name: ");
+                var pictureName = Console.ReadLine();
+
+                var valid = service.RemoveExistingPictureToPictureUserByUserName(user, pictureName);
+
+                if (valid != null)
+                    Console.WriteLine($"{valid.PictureName} Removed!");
+                else
+                    Console.WriteLine($"{valid.PictureName} already Removed.");
+                Console.ReadKey();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         public void PrintUpdatePicture(string user)
         {
-            Console.WriteLine("-----------------------------------");
-            Console.WriteLine("What is the name of the picture you would like to update?");
-            Console.Write("PictureName: ");
-            var pictureName = Console.ReadLine();
-            Console.WriteLine("what is the Picture link you want to update?");
-            Console.Write("PictureUrl: ");
-            var pictureUrl = Console.ReadLine();
-            service.UpdatePictureOfUser(user, pictureName, pictureUrl);
-        }
-
-        private void PrintRemovePicture(string user)
-        {
-            //not done
-            throw new NotImplementedException();
+            try
+            {
+                Console.WriteLine("-----------------------------------");
+                Console.WriteLine("What is the name of the picture you would like to update?");
+                Console.Write("PictureName: ");
+                var pictureName = Console.ReadLine();
+                Console.WriteLine("what is the Picture link you want to update?");
+                Console.Write("PictureUrl: ");
+                var pictureUrl = Console.ReadLine();
+                service.UpdatePictureOfUser(user, pictureName, pictureUrl);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }   
         }
 
         public void PrintAllPictures(string user)
         {
-            var pictures = service.GetAllPicturesByUserName(user);
-            foreach (var picture in pictures)
+            try
             {
-                Console.WriteLine("-----------------------------------");
-                Console.WriteLine($"Id:          {picture.Id}");
-                Console.WriteLine($"PictureName: {picture.PictureName}");
-                Console.WriteLine($"PictureUrl:  {picture.PictureUrl}");
-                Console.WriteLine($"Allowed:     {picture.Valid}");
+                var pictures = service.GetAllPicturesByUserName(user);
+                foreach (var picture in pictures)
+                {
+                    Console.WriteLine("-----------------------------------");
+                    Console.WriteLine($"Id:          {picture.Id}");
+                    Console.WriteLine($"PictureName: {picture.PictureName}");
+                    Console.WriteLine($"PictureUrl:  {picture.PictureUrl}");
+                    Console.WriteLine($"Allowed:     {picture.Valid}");
+                }
+                Console.ReadKey();
             }
-            Console.ReadKey();
+            catch (Exception e)
+            {
+                throw e;
+            }
+            
         }
     }
 }

@@ -65,6 +65,25 @@ namespace Labb4.Services
             }
         }
 
+        public Picture RemoveExistingPictureToPictureUserByUserName(string UserName, string PictureName)
+        {
+            try
+            {
+                pictureUser = pictureUserController.GetPictureUserByUserName(UserName);
+                picture = pictureController.GetPictureByPictureName(PictureName);
+                pictureUser.PictureId.Remove(picture.Id);
+
+                PictureUser updatedPictureUser = pictureUserController.UpdatePictureUserDocument(pictureUser.Username, pictureUser.Email, pictureUser.PictureId);
+
+                return picture;
+            }
+            catch (Exception e)
+            {
+                return null;
+                throw e;
+            }
+        }
+
         public Picture AddNewPictureToUser(string userName, string pictureName, string pictureUrl)
         {
             picture = pictureController.CreatePicture(pictureName, pictureUrl);
@@ -80,9 +99,11 @@ namespace Labb4.Services
             return picture;
         }
 
-        public Picture RemovePictureFromUser()
+        public Picture RemovePictureFromUser(string userName,string pictureName)
         {
-            return null;
+            picture = pictureController.UpdatePictureDocument(pictureName, pictureUrl, false);
+
+            return picture;
         }
     }
 }

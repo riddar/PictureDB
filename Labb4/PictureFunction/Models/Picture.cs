@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PictureFunction.Models
 {
-    class Picture
+    public class Picture
     {
         [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }

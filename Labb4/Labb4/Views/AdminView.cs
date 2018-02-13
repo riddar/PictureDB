@@ -57,15 +57,16 @@ namespace Labb4.Views
         {
             Console.Clear();
             Header();
-            Console.WriteLine("---------------------------");
-            Console.WriteLine($"      {name}             |");
-            Console.WriteLine("|     1.Create Picture    |");
-            Console.WriteLine("|     2.Add Picture       |");
-            Console.WriteLine("|     3.Update Picture    |");
-            Console.WriteLine("|     4.Remove Picture    |");
-            Console.WriteLine("|     5.Show pictures     |");
-            Console.WriteLine("|     6.return            |");
-            Console.WriteLine("---------------------------");
+            Console.WriteLine("------------------------------------");
+            Console.WriteLine($"      Admin: {name}               |");
+            Console.WriteLine("|     1.Print all users            |");
+            Console.WriteLine("|     2.print all Picture          |");
+            Console.WriteLine("|     3.print Rejected Pictures    |");
+            Console.WriteLine("|     4.Update Picture             |");
+            Console.WriteLine("|     5.Remove User                |");
+            Console.WriteLine("|     6.Create User                |");
+            Console.WriteLine("|     7.return                     |");
+            Console.WriteLine("------------------------------------");
             Footer();
 
             try
@@ -110,33 +111,65 @@ namespace Labb4.Views
 
         public void PrintAllUsers()
         {
-            var pictureUsers = service.GetAllUser();
-            PictureController Picture = new PictureController();
-            foreach (var pictureUser in pictureUsers)
+            try
             {
-                Console.WriteLine("-------------------");
-                Console.WriteLine(pictureUser.Id);
-                Console.WriteLine(pictureUser.Username);
-                Console.WriteLine(pictureUser.Email);
-                foreach (var pictureid in pictureUser.PictureId)
+                var pictureUsers = service.GetAllUser();
+                PictureController Picture = new PictureController();
+                foreach (var pictureUser in pictureUsers)
                 {
-                    var picture = Picture.GetPictureById(pictureid);
-                    Console.WriteLine(picture.PictureName);
+                    Console.WriteLine("-------------------");
+                    Console.WriteLine(pictureUser.Id);
+                    Console.WriteLine(pictureUser.Username);
+                    Console.WriteLine(pictureUser.Email);
+                    foreach (var pictureid in pictureUser.PictureId)
+                    {
+                        var picture = Picture.GetPictureById(pictureid);
+                        Console.WriteLine(picture.PictureName);
+                    }
                 }
+                Console.ReadKey();
             }
-            Console.ReadKey();
+            catch (Exception e)
+            {
+                throw e;
+            }
+           
         }
 
         private void PrintCreateUser()
         {
-            Console.WriteLine("what is the username you want to create?");
-            Console.Write("Username: ");
-            var username = Console.ReadLine();
-            Console.WriteLine("What is the email of the user you would like to create?");
-            var email = Console.ReadLine();
-            List<string> pictureId = new List<string>();
-            //add loop
-            service.CreateUser(username, email, pictureId);
+            try
+            {
+                Console.WriteLine("what is the username you want to create?");
+                Console.Write("Username: ");
+                var username = Console.ReadLine();
+                Console.WriteLine("What is the email of the user you would like to create?");
+                var email = Console.ReadLine();
+                List<string> pictureIds = new List<string>();
+                bool moveOn = false;
+                do
+                {
+                    Console.WriteLine("Which picture id would you like to add? (empty field will move on)");
+                    var pictureId = Console.ReadLine();
+                    if (pictureId != "")
+                    {
+                        pictureIds.Add(pictureId);
+                    }
+                    else
+                    {
+                        moveOn = true;
+                    }
+
+                }
+                while (moveOn != false);
+
+                service.CreateUser(username, email, pictureIds);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            
         }
 
         private void PrintRemoveUser()
@@ -149,77 +182,98 @@ namespace Labb4.Views
 
         private void PrintUpdatePicture()
         {
-            Console.WriteLine("what is the picture name you want to update?");
-            Console.Write("Username: ");
-            var pictureName = Console.ReadLine();
-            Console.WriteLine("What is the picture link you would like to update?");
-            Console.Write("PictureUrl: ");
-            var pictureUrl = Console.ReadLine();
-            Console.WriteLine("Would you like to validate this picture?");
-            Console.Write("Valid: ");
-            var Valid = Console.ReadLine();
-            if (Valid.ToLower().Equals("yes"))
+            try
             {
-                var picture = service.UpdatePicture(pictureName, pictureUrl, true);
-                if (picture != null)
+                Console.WriteLine("what is the picture name you want to update?");
+                Console.Write("Username: ");
+                var pictureName = Console.ReadLine();
+                Console.WriteLine("What is the picture link you would like to update?");
+                Console.Write("PictureUrl: ");
+                var pictureUrl = Console.ReadLine();
+                Console.WriteLine("Would you like to validate this picture?");
+                Console.Write("Valid: ");
+                var Valid = Console.ReadLine();
+                if (Valid.ToLower().Equals("yes"))
                 {
-                    Console.WriteLine("picture updated!");
+                    var picture = service.UpdatePicture(pictureName, pictureUrl, true);
+                    if (picture != null)
+                    {
+                        Console.WriteLine("picture updated!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("picture not found!");
+                    }
+                }
+                else if (Valid.ToLower().Equals("no"))
+                {
+                    var picture = service.UpdatePicture(pictureName, pictureUrl, false);
+                    if (picture != null)
+                    {
+                        Console.WriteLine("picture updated!");
+                    }
+                    else
+                    {
+                        Console.WriteLine("picture not found!");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine("picture not found!");
+                    Console.WriteLine("Please write yes/no!");
                 }
             }
-            else if (Valid.ToLower().Equals("no"))
+            catch (Exception e)
             {
-                var picture = service.UpdatePicture(pictureName, pictureUrl, false);
-                if (picture != null)
-                {
-                    Console.WriteLine("picture updated!");
-                }
-                else
-                {
-                    Console.WriteLine("picture not found!");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Please write yes/no!");
+                throw e;
             }
         }
 
         private void PrintAllfalsePictures()
         {
-            var pictures = service.GetAllFalsePictures();
-            if (pictures != null)
+            try
             {
-                foreach (var picture in pictures)
+                var pictures = service.GetAllFalsePictures();
+                if (pictures != null)
                 {
-                    Console.WriteLine("-----------------------------------");
-                    Console.WriteLine($"Id:          {picture.Id}");
-                    Console.WriteLine($"PictureName: {picture.PictureName}");
-                    Console.WriteLine($"PictureUrl:  {picture.PictureUrl}");
-                    Console.WriteLine($"Allowed:     {picture.Valid}");
+                    foreach (var picture in pictures)
+                    {
+                        Console.WriteLine("-----------------------------------");
+                        Console.WriteLine($"Id:          {picture.Id}");
+                        Console.WriteLine($"PictureName: {picture.PictureName}");
+                        Console.WriteLine($"PictureUrl:  {picture.PictureUrl}");
+                        Console.WriteLine($"Allowed:     {picture.Valid}");
+                    }
+                    Console.ReadKey();
                 }
-                Console.ReadKey();
             }
+            catch (Exception e)
+            {
+                throw e;
+            } 
         }
 
         private void PrintAllPictures()
         {
-            var pictures = service.GetAllPictures();
-            if (pictures != null)
+            try
             {
-                foreach (var picture in pictures)
+                var pictures = service.GetAllPictures();
+                if (pictures != null)
                 {
-                    Console.WriteLine("-----------------------------------");
-                    Console.WriteLine($"Id:          {picture.Id}");
-                    Console.WriteLine($"PictureName: {picture.PictureName}");
-                    Console.WriteLine($"PictureUrl:  {picture.PictureUrl}");
-                    Console.WriteLine($"Allowed:     {picture.Valid}");
+                    foreach (var picture in pictures)
+                    {
+                        Console.WriteLine("-----------------------------------");
+                        Console.WriteLine($"Id:          {picture.Id}");
+                        Console.WriteLine($"PictureName: {picture.PictureName}");
+                        Console.WriteLine($"PictureUrl:  {picture.PictureUrl}");
+                        Console.WriteLine($"Allowed:     {picture.Valid}");
+                    }
+                    Console.ReadKey();
                 }
-                Console.ReadKey();
             }
+            catch (Exception e)
+            {
+                throw e;
+            }   
         }
     }
 }

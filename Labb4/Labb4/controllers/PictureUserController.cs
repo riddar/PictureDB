@@ -163,7 +163,5 @@ namespace Labb4.Controllers
                 throw e;
             }
         }
-
-        
     }
 }
