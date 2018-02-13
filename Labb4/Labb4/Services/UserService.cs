@@ -101,7 +101,8 @@ namespace Labb4.Services
 
         public Picture RemovePictureFromUser(string userName,string pictureName)
         {
-            picture = pictureController.UpdatePictureDocument(pictureName, pictureUrl, false);
+
+            picture = pictureController.UpdatePictureDocument(pictureName, pictureController.GetPictureByPictureName(pictureName).PictureUrl, false);
 
             return picture;
         }
