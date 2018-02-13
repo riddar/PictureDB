@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2026
+VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Labb4", "Labb4\Labb4.csproj", "{5BA42979-A083-4B3F-96D1-84912DA3C8B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PictureFunction", "PictureFunction\PictureFunction.csproj", "{CAFBF59A-E2A1-4BE2-BDAE-120E692C16CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PictureFunction", "PictureFunction\PictureFunction.csproj", "{CAFBF59A-E2A1-4BE2-BDAE-120E692C16CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
