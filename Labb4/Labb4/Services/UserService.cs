@@ -18,6 +18,11 @@ namespace Labb4.Services
         PictureUser pictureUser = new PictureUser();
         Picture picture = new Picture();
 
+        public PictureUser CheckpictureUser(string userName)
+        {
+            pictureUser = pictureUserController.GetPictureUserByUserName(userName);
+            return pictureUser;
+        }
 
         public IEnumerable<Picture> GetAllPicturesByUserName(string userName)
         {
@@ -25,9 +30,7 @@ namespace Labb4.Services
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
-                                            .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
-
+                    pictureUser = pictureUserController.GetPictureUserByUserName(userName);
                     
                     List<Picture> pictures = new List<Picture>();
                     foreach (var pictureId in pictureUser.PictureId)
@@ -50,11 +53,14 @@ namespace Labb4.Services
         {
             try
             {
-                pictureUser = pictureUserController.GetPictureUserByUserName(UserName);
-                picture = pictureController.GetPictureByPictureName(PictureName);
-                pictureUser.PictureId.Add(picture.Id);
+                using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
+                {
+                    pictureUser = pictureUserController.GetPictureUserByUserName(UserName);
+                    picture = pictureController.GetPictureByPictureName(PictureName);
+                    pictureUser.PictureId.Add(picture.Id);
 
-                PictureUser updatedPictureUser = pictureUserController.UpdatePictureUserDocument(pictureUser.Username, pictureUser.Email, pictureUser.PictureId);
+                    PictureUser updatedPictureUser = pictureUserController.UpdatePictureUserDocument(pictureUser.Username, pictureUser.Email, pictureUser.PictureId);
+                }
 
                 return picture;
             }
@@ -84,17 +90,17 @@ namespace Labb4.Services
             }
         }
 
-        public Picture AddNewPictureToUser(string userName, string pictureName, string pictureUrl)
+        public Picture CreateNewPictureToUser(string userName, string pictureName, string pictureUrl)
         {
             picture = pictureController.CreatePicture(pictureName, pictureUrl);
-            AddExistingPictureToPictureUserByUserName(userName, picture.PictureName);
 
             return picture;
         }
 
         public Picture UpdatePictureOfUser(string userName, string pictureName, string pictureUrl)
         {
-            picture = pictureController.UpdatePictureDocument(pictureName, pictureUrl, false);
+            bool valid = false;
+            picture = pictureController.UpdatePictureDocument(pictureName, pictureUrl, valid);
 
             return picture;
         }

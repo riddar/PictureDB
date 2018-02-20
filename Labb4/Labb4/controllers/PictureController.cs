@@ -23,11 +23,13 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    var picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
+                    picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
                         .Where(d => d.PictureName == pictureName).AsEnumerable().FirstOrDefault();
+
                     if (picture == null)
                     {
-                        Picture newPicture = new Picture() {PictureName = pictureName, PictureUrl = pictureUrl, Valid = false };
+                        bool valid = false;
+                        Picture newPicture = new Picture() {PictureName = pictureName, PictureUrl = pictureUrl, Valid = valid };
                         Client.CreateDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, newPicture);
                         return newPicture;
                     }
@@ -39,7 +41,6 @@ namespace Labb4.Controllers
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -107,10 +108,12 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    return Client.CreateDocumentQuery("Pictures")
+                    var doc =  Client.CreateDocumentQuery<Document>(Context.GetCollectionByName("Pictures").SelfLink)
                        .Where(D => D.Id == id)
                        .AsEnumerable()
                        .First();
+
+                    return doc;
                 }      
             }
             catch (Exception e)
@@ -134,7 +137,11 @@ namespace Labb4.Controllers
                         picture.PictureName = pictureName;
                         picture.PictureUrl = pictureUrl;
                         picture.Valid = valid;
-                        Client.ReplaceDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, picture);
+
+                        var document = GetDocumentById(picture.Id);
+                        document.SetPropertyValue(document, picture);
+                        var result = Client.ReplaceDocumentAsync(document.SelfLink, picture);
+                        var test = result.IsCompleted;
                         return picture;
                     }
                     else

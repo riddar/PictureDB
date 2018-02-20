@@ -36,7 +36,17 @@ namespace Labb4.Views
             Console.WriteLine("  Enter your name below    ");
             Console.WriteLine("---------------------------");
             string result = Console.ReadLine();
-            return result;
+            var valid = service.CheckpictureUser(result);
+            if (valid != null)
+            {
+                return result;
+            }
+            else
+            {
+                Name();
+            }
+
+            return null;
         }
 
         public void Users(string name)
@@ -93,8 +103,6 @@ namespace Labb4.Views
 
         public void PrintCreatePicture(string user)
         {
-            try
-            {
                 Console.WriteLine("-----------------------------------");
                 Console.WriteLine("what name would you like to give the picture?");
                 Console.Write("PictureName: ");
@@ -102,24 +110,17 @@ namespace Labb4.Views
                 Console.WriteLine("what is the Picture link you want to add?");
                 Console.Write("PictureUrl: ");
                 var pictureUrl = Console.ReadLine();
-                var valid = service.AddNewPictureToUser(user, pictureName, pictureUrl);
-                if (valid != null)
-                    Console.WriteLine($"{valid.PictureName} Created!");
-                else
+                var valid = service.CreateNewPictureToUser(user, pictureName, pictureUrl);
+
+                if (valid == null)
                     Console.WriteLine($"{valid.PictureName} already Created.");
-                Console.ReadKey();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+                else
+                    Console.WriteLine($"{valid.PictureName} Created!");
             
         }
 
         public void PrintAddPicture(string user)
         {
-            try
-            {
                 Console.WriteLine("-----------------------------------");
                 Console.WriteLine("Which picture would you like to add to the list?");
                 Console.Write("picture name: ");
@@ -132,18 +133,11 @@ namespace Labb4.Views
                 else
                     Console.WriteLine($"{valid.PictureName} already Added.");
                 Console.ReadKey();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
             
         }
 
         public void PrintRemovePicture(string user)
         {
-            try
-            {
                 Console.WriteLine("-----------------------------------");
                 Console.WriteLine("Which picture would you like to remove from the list?");
                 Console.Write("picture name: ");
@@ -156,17 +150,10 @@ namespace Labb4.Views
                 else
                     Console.WriteLine($"{valid.PictureName} already Removed.");
                 Console.ReadKey();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
         }
 
         public void PrintUpdatePicture(string user)
         {
-            try
-            {
                 Console.WriteLine("-----------------------------------");
                 Console.WriteLine("What is the name of the picture you would like to update?");
                 Console.Write("PictureName: ");
@@ -175,17 +162,10 @@ namespace Labb4.Views
                 Console.Write("PictureUrl: ");
                 var pictureUrl = Console.ReadLine();
                 service.UpdatePictureOfUser(user, pictureName, pictureUrl);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }   
         }
 
         public void PrintAllPictures(string user)
         {
-            try
-            {
                 var pictures = service.GetAllPicturesByUserName(user);
                 foreach (var picture in pictures)
                 {
@@ -195,13 +175,7 @@ namespace Labb4.Views
                     Console.WriteLine($"PictureUrl:  {picture.PictureUrl}");
                     Console.WriteLine($"Allowed:     {picture.Valid}");
                 }
-                Console.ReadKey();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-            
+                Console.ReadKey();        
         }
     }
 }

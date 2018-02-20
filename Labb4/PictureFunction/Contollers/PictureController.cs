@@ -23,7 +23,7 @@ namespace PictureFunction.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    var picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
+                    picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
                         .Where(d => d.PictureName == pictureName).AsEnumerable().FirstOrDefault();
                     if (picture == null)
                     {

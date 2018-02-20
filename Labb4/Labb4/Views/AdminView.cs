@@ -41,7 +41,7 @@ namespace Labb4.Views
             Console.WriteLine("---------------------------");
             string password = Console.ReadLine();
 
-            if(service.CheckPassword(name, password))
+            if(service.CheckPassword(name, password) == true)
             {
                 return name;
             }
@@ -111,12 +111,11 @@ namespace Labb4.Views
 
         public void PrintAllUsers()
         {
-            try
-            {
                 var pictureUsers = service.GetAllUser();
                 PictureController Picture = new PictureController();
                 foreach (var pictureUser in pictureUsers)
                 {
+                    Console.WriteLine("Users");
                     Console.WriteLine("-------------------");
                     Console.WriteLine(pictureUser.Id);
                     Console.WriteLine(pictureUser.Username);
@@ -124,52 +123,40 @@ namespace Labb4.Views
                     foreach (var pictureid in pictureUser.PictureId)
                     {
                         var picture = Picture.GetPictureById(pictureid);
-                        Console.WriteLine(picture.PictureName);
+                        Console.WriteLine($"--{picture.PictureName}");
                     }
                 }
                 Console.ReadKey();
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
            
         }
 
         private void PrintCreateUser()
         {
-            try
-            {
                 Console.WriteLine("what is the username you want to create?");
                 Console.Write("Username: ");
                 var username = Console.ReadLine();
                 Console.WriteLine("What is the email of the user you would like to create?");
                 var email = Console.ReadLine();
                 List<string> pictureIds = new List<string>();
-                bool moveOn = false;
+                bool keepGoing = true;
                 do
                 {
                     Console.WriteLine("Which picture id would you like to add? (empty field will move on)");
                     var pictureId = Console.ReadLine();
-                    if (pictureId != "")
+                    if (pictureId.Equals(""))
                     {
-                        pictureIds.Add(pictureId);
+                        keepGoing = false;
                     }
                     else
                     {
-                        moveOn = true;
+                        pictureIds.Add(pictureId);
                     }
 
                 }
-                while (moveOn != false);
+                while (keepGoing != false);
 
-                service.CreateUser(username, email, pictureIds);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-            
+                var user = service.CreateUser(username, email, pictureIds);
+                Console.WriteLine($"user: {user.Id}, {user.Username}, {user.Email} was added!");
         }
 
         private void PrintRemoveUser()
@@ -177,20 +164,27 @@ namespace Labb4.Views
             Console.WriteLine("what is the username you want to remove?");
             Console.Write("Username: ");
             var username = Console.ReadLine();
-            service.RemoveUser(username);
+            var user = service.RemoveUser(username);
+            if (user != null)
+            {
+                Console.WriteLine($"removed {user.Username}!");
+            }
+            else
+            {
+                Console.WriteLine("already removed!");
+            }
+            
         }
 
         private void PrintUpdatePicture()
         {
-            try
-            {
                 Console.WriteLine("what is the picture name you want to update?");
                 Console.Write("Username: ");
                 var pictureName = Console.ReadLine();
                 Console.WriteLine("What is the picture link you would like to update?");
                 Console.Write("PictureUrl: ");
                 var pictureUrl = Console.ReadLine();
-                Console.WriteLine("Would you like to validate this picture?");
+                Console.WriteLine("Would you like to validate this picture write yes/no?");
                 Console.Write("Valid: ");
                 var Valid = Console.ReadLine();
                 if (Valid.ToLower().Equals("yes"))
@@ -221,17 +215,10 @@ namespace Labb4.Views
                 {
                     Console.WriteLine("Please write yes/no!");
                 }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
         }
 
         private void PrintAllfalsePictures()
         {
-            try
-            {
                 var pictures = service.GetAllFalsePictures();
                 if (pictures != null)
                 {
@@ -245,17 +232,10 @@ namespace Labb4.Views
                     }
                     Console.ReadKey();
                 }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            } 
         }
 
         private void PrintAllPictures()
         {
-            try
-            {
                 var pictures = service.GetAllPictures();
                 if (pictures != null)
                 {
@@ -268,12 +248,7 @@ namespace Labb4.Views
                         Console.WriteLine($"Allowed:     {picture.Valid}");
                     }
                     Console.ReadKey();
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }   
+                } 
         }
     }
 }

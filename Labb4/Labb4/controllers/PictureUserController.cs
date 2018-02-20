@@ -92,14 +92,15 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    return Client.CreateDocumentQuery(Context.GetCollectionByName("PictureUser").SelfLink)
+                    return Client.CreateDocumentQuery<Document>(Context.GetCollectionByName("PictureUsers").SelfLink)
                        .Where(D => D.Id == id)
                        .AsEnumerable()
-                       .First();
+                       .FirstOrDefault();
                 }
             }
             catch (Exception e)
             {
+                return null;
                 throw e;
             }
 
@@ -114,21 +115,24 @@ namespace Labb4.Controllers
                     pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
                         .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
 
-                    if (pictureUser != null)
+                    if (pictureUser == null)
+                    {
+                        PictureUser newPictureUser = new PictureUser() { Username = userName, Email = email, PictureId = pictureId };
+                        Client.CreateDocumentAsync(Context.GetCollectionByName("PictureUsers").SelfLink, newPictureUser);
+                        return newPictureUser;
+                    }
+                    else
                     {
                         pictureUser.Username = userName;
                         pictureUser.Email = email;
                         pictureUser.PictureId = pictureId;
-                        Client.ReplaceDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, pictureUser);
+
+                        Document document = GetDocumentById(pictureUser.Id);
+
+                        Client.ReplaceDocumentAsync(document.SelfLink, pictureUser);
                         return pictureUser;
                     }
-                    else
-                    {
-                        return null;
-                    }
                 }
-
-
             }
             catch (Exception e)
             {
@@ -152,15 +156,20 @@ namespace Labb4.Controllers
                     if (pictureUser != null)
                     {
                         Client.DeleteDocumentAsync(document.SelfLink);
+                        return pictureUser;
+                    }
+                    else
+                    {
+                        return null;
                     }
 
-                    return pictureUser;
+                    
                 }
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                return null;
             }
         }
     }
