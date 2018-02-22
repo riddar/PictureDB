@@ -15,7 +15,7 @@ namespace PictureFunction.Controllers
     public class PictureController
     {
         CosmosDBContext Context = new CosmosDBContext();
-        Picture picture = new Picture();
+        Picture _picture = new Picture();
 
         public Picture CreatePicture(string pictureName, string pictureUrl)
         {
@@ -23,44 +23,47 @@ namespace PictureFunction.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
-                        .Where(d => d.PictureName == pictureName).AsEnumerable().FirstOrDefault();
-                    if (picture == null)
+                    _picture = GetPictureByPictureName(pictureName);
+
+                    if (_picture == null)
                     {
-                        Picture newPicture = new Picture() {PictureName = pictureName, PictureUrl = pictureUrl, Valid = false };
+                        Picture newPicture = new Picture() { PictureName = pictureName, PictureUrl = pictureUrl, Valid = false };
                         Client.CreateDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, newPicture);
                         return newPicture;
                     }
                     else
                     {
-                        return picture;
+                        return _picture;
                     }
                 }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
 
         public IEnumerable<Picture> GetAllPictures()
-        {     
+        {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
                     IEnumerable<Picture> pictures = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink).AsEnumerable();
                     List<Picture> list = new List<Picture>();
+
+                    if (pictures == null)
+                        return null;
+
                     foreach (var picture in pictures)
                         list.Add(picture);
                     return list;
                 }
-               
+
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
@@ -70,15 +73,17 @@ namespace PictureFunction.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
+                    _picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
                                             .Where(d => d.PictureName == pictureName).AsEnumerable().FirstOrDefault();
 
-                    return picture;
-                }     
+                    if (_picture == null)
+                        return null;
+
+                    return _picture;
+                }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -89,14 +94,17 @@ namespace PictureFunction.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
+                    _picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
                                                .Where(d => d.Id == id).AsEnumerable().FirstOrDefault();
-                    return picture;
+
+                    if (_picture == null)
+                        return null;
+
+                    return _picture;
                 }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -107,96 +115,68 @@ namespace PictureFunction.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    return Client.CreateDocumentQuery("Pictures")
+                    Document doc = Client.CreateDocumentQuery<Document>(Context.GetCollectionByName("Pictures").SelfLink)
                        .Where(D => D.Id == id)
                        .AsEnumerable()
                        .First();
-                }      
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
 
-        }
-
-        public Picture UpdatePictureDocument(string pictureName, string pictureUrl, bool valid)
-        {
-            try
-            {
-                using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
-                {
-                    picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
-                        .Where(d => d.PictureName == pictureName).AsEnumerable().FirstOrDefault();
-
-                    if (picture != null)
-                    {
-                        picture.PictureName = pictureName;
-                        picture.PictureUrl = pictureUrl;
-                        picture.Valid = valid;
-                        Client.ReplaceDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, picture);
-                        return picture;
-                    }
-                    else
-                    {
+                    if (doc == null)
                         return null;
-                    }
+
+                    return doc;
                 }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
+
         }
 
-        public Picture UpdatePictureDocument(string pictureName, bool valid)
+        public Picture UpdatePictureByPictureName(string pictureName, bool valid)
+        {
+            try
+            {
+                using (DocumentClient client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
+                {
+                    _picture = GetPictureByPictureName(pictureName);
+
+                    Document document = GetDocumentById(_picture.Id);
+                    document.SetPropertyValue("Valid", valid);
+
+                    client.ReplaceDocumentAsync(document);
+
+                    _picture = GetPictureByPictureName(pictureName);
+
+                    return _picture;
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+
+        }
+
+        public Picture DeletePictureByPictureName(string pictureName)
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
-                        .Where(d => d.PictureName == pictureName).AsEnumerable().FirstOrDefault();
+                    _picture = GetPictureByPictureName(pictureName);
+                    Document document = GetDocumentById(_picture.Id);
 
-                    if (picture != null)
-                    {
-                        picture.PictureName = pictureName;
-                        picture.Valid = valid;
-                        Client.ReplaceDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, picture);
-                        return picture;
-                    }
-                    else
-                    {
+                    if (_picture == null)
                         return null;
-                    }
+
+                    var result = Client.DeleteDocumentAsync(document.SelfLink);
+
+                    if (result.Result == null)
+                        return null;
+
+                    return _picture;
                 }
-            }
-            catch (Exception e)
-            {
-                return null;
-                throw e;
-            }
-        }
-
-        public void DeletePictureByPictureName(string pictureName)
-        {
-           
-            try
-            {
-                using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
-                {
-                    picture = Client.CreateDocumentQuery<Picture>(Context.GetCollectionByName("Pictures").SelfLink)
-                    .Where(d => d.PictureName == pictureName).AsEnumerable().FirstOrDefault();
-
-                    Document document = GetDocumentById(picture.Id);
-
-                    if (picture != null)
-                    {
-                        Client.DeleteDocumentAsync(document.SelfLink);
-                    }
-                }
-                    
             }
             catch (Exception e)
             {

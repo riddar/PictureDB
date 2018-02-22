@@ -14,11 +14,12 @@ namespace PictureFunction
             PictureController pictureController = new PictureController();
 
             var pictures = pictureController.GetAllPictures();
+
             foreach (var picture in pictures)
             {
                 if (picture.Valid == false && picture.PictureName.EndsWith(".png"))
                 {
-                    pictureController.UpdatePictureDocument(picture.PictureName, true);
+                    pictureController.UpdatePictureByPictureName(picture.PictureName, true);
                 }
             }
         }

@@ -13,7 +13,7 @@ namespace Labb4.Controllers
     class AdminController
     {
         CosmosDBContext Context = new CosmosDBContext();
-        Admin admin = new Admin();
+        Admin _Admin = new Admin();
 
         public Admin CreateAdmin(string id, string adminName, string password)
         {
@@ -21,9 +21,9 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admin").SelfLink)
-                        .Where(d => d.Id == id).AsEnumerable().FirstOrDefault();
-                    if (admin == null)
+                    _Admin = GetAdminByAdminName(adminName);
+
+                    if (_Admin == null)
                     {
                         Admin newAdmin = new Admin() { Id = id, AdminName = adminName, Password = password };
                         Client.CreateDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, newAdmin);
@@ -31,13 +31,12 @@ namespace Labb4.Controllers
                     }
                     else
                     {
-                        return admin;
+                        return _Admin;
                     }
                 }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -48,19 +47,13 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    List<Admin> list = new List<Admin>();
                     IEnumerable<Admin> admins = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink).AsEnumerable();
-                    foreach (var admin in admins)
-                    {
-                        list.Add(admin);
-                    }
-                    return list;
+                    return admins;
                 }
-
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
@@ -70,15 +63,14 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink)
+                    _Admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink)
                         .Where(d => d.AdminName == adminName).AsEnumerable().FirstOrDefault();
 
-                    return admin;
+                    return _Admin;
                 }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -102,53 +94,40 @@ namespace Labb4.Controllers
 
         }
 
-        public Admin UpdateAdminDocument(string adminName, string password)
+        public void UpdatePasswordForAdminDocument(string adminName, string password)
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink)
-                        .Where(d => d.AdminName == adminName).AsEnumerable().FirstOrDefault();
+                    _Admin = GetAdminByAdminName(adminName);
 
-                    if (admin != null)
-                    {
-                        admin.AdminName = adminName;
-                        admin.Password = password;
-                        Client.ReplaceDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, admin);
-                        return admin;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    Document document = GetDocumentById(_Admin.Id);
+                    document.SetPropertyValue("Password", password);
+
+                    Client.ReplaceDocumentAsync(document);
                 }
-
-
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
 
-        public void DeleteAdminByAdminName(string adminName)
+        public Admin DeleteAdminByAdminName(string adminName)
         {
-
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    admin = Client.CreateDocumentQuery<Admin>(Context.GetCollectionByName("Admins").SelfLink)
-                    .Where(d => d.AdminName == adminName).AsEnumerable().FirstOrDefault();
+                    _Admin = GetAdminByAdminName(adminName);
+                    Document document = GetDocumentById(_Admin.Id);
 
-                    Document document = GetDocumentById(admin.Id);
+                    if (document == null)
+                        return null;
 
-                    if (admin != null)
-                    {
-                        Client.DeleteDocumentAsync(document.SelfLink);
-                    }
+                    Client.DeleteDocumentAsync(document.SelfLink);
+                    return _Admin;
                 }
 
             }

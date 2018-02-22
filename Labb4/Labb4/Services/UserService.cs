@@ -44,7 +44,6 @@ namespace Labb4.Services
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -59,14 +58,13 @@ namespace Labb4.Services
                     picture = pictureController.GetPictureByPictureName(PictureName);
                     pictureUser.PictureId.Add(picture.Id);
 
-                    PictureUser updatedPictureUser = pictureUserController.UpdatePictureUserDocument(pictureUser.Username, pictureUser.Email, pictureUser.PictureId);
+                    PictureUser updatedPictureUser = pictureUserController.UpdatePictureUserByUsername(pictureUser.Username, pictureUser.Email, pictureUser.PictureId);
                 }
 
                 return picture;
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -79,13 +77,12 @@ namespace Labb4.Services
                 picture = pictureController.GetPictureByPictureName(PictureName);
                 pictureUser.PictureId.Remove(picture.Id);
 
-                PictureUser updatedPictureUser = pictureUserController.UpdatePictureUserDocument(pictureUser.Username, pictureUser.Email, pictureUser.PictureId);
+                PictureUser updatedPictureUser = pictureUserController.UpdatePictureUserByUsername(pictureUser.Username, pictureUser.Email, pictureUser.PictureId);
 
                 return picture;
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -93,22 +90,20 @@ namespace Labb4.Services
         public Picture CreateNewPictureToUser(string userName, string pictureName, string pictureUrl)
         {
             picture = pictureController.CreatePicture(pictureName, pictureUrl);
-
             return picture;
         }
 
         public Picture UpdatePictureOfUser(string userName, string pictureName, string pictureUrl)
         {
             bool valid = false;
-            picture = pictureController.UpdatePictureDocument(pictureName, pictureUrl, valid);
+            picture = pictureController.UpdatePictureByPictureName(pictureName, pictureUrl, valid);
 
             return picture;
         }
 
         public Picture RemovePictureFromUser(string userName,string pictureName)
         {
-
-            picture = pictureController.UpdatePictureDocument(pictureName, pictureController.GetPictureByPictureName(pictureName).PictureUrl, false);
+            picture = pictureController.UpdatePictureByPictureName(pictureName, pictureController.GetPictureByPictureName(pictureName).PictureUrl, false);
 
             return picture;
         }

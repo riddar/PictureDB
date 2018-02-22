@@ -18,7 +18,7 @@ namespace PictureFunction
     public static class Mode
     {
         [FunctionName("Mode")]
-        public static async Task<HttpResponseMessage> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
+        public static HttpResponseMessage Run([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)]HttpRequestMessage req, TraceWriter log)
         {
             PictureController pictureController = new PictureController();
             log.Info("C# HTTP trigger function processed a request.");
@@ -29,67 +29,46 @@ namespace PictureFunction
 
             if (ViewReviewQueue != null)
             {
-                List<string> newPictures = new List<string>();
                 var pictures = pictureController.GetAllPictures();
                 var json = JsonConvert.SerializeObject(pictures);
-                foreach (var picture in pictures)
-                {
-                    if (picture.Valid == false)
-                    {
-                        newPictures.Add(picture.PictureName);
-                    }
-                }
                 return req.CreateResponse(HttpStatusCode.OK, $"{json}");
             }
             else if (Approved != null)
             {
                 var picture = pictureController.GetPictureByPictureName(Approved);
-                if (picture != null)
-                {
-                    if (picture.Valid == true)
-                    {
-                        return req.CreateResponse(HttpStatusCode.OK, $"{JsonConvert.SerializeObject(picture)}, picture already approved!");
-                    }
-                    else if (picture.Valid != true)
-                    {
-                        var updatedPicture = pictureController.UpdatePictureDocument(Approved, true);
-                        return req.CreateResponse(HttpStatusCode.OK, $"{JsonConvert.SerializeObject(updatedPicture)}, picture approved!");
-                    }
-                }
-                else
-                {
+
+                if (picture == null)
                     return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
+
+                if (picture.Valid == true)
+                {
+                    return req.CreateResponse(HttpStatusCode.OK, $"{JsonConvert.SerializeObject(picture)}, picture already approved!");
                 }
-                
+                else if (picture.Valid != true)
+                {
+                    var updatedPicture = pictureController.UpdatePictureByPictureName(Approved, true);
+                    return req.CreateResponse(HttpStatusCode.OK, $"{JsonConvert.SerializeObject(updatedPicture)}, picture approved!");
+                }
             }
             else if (Rejected != null)
             {
                 var picture = pictureController.GetPictureByPictureName(Rejected);
-                if (picture != null)
-                {
-                    if (picture.Valid == false)
-                    {
-                        return req.CreateResponse(HttpStatusCode.OK, $"{JsonConvert.SerializeObject(picture)}, picture already rejected!");
-                    }
-                    else if (picture.Valid != false)
-                    {
-                        var updatedPicture = pictureController.UpdatePictureDocument(Rejected, false);
-                        return req.CreateResponse(HttpStatusCode.OK, $"{JsonConvert.SerializeObject(updatedPicture)}, picture rejected!");
-                    }
-                }
-                else
-                {
+
+                if (picture == null)
                     return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
+
+                if (picture.Valid == false)
+                {
+                    return req.CreateResponse(HttpStatusCode.OK, $"{JsonConvert.SerializeObject(picture)}, picture already rejected!");
                 }
-            }
-            else
-            {
-                return req.CreateResponse(HttpStatusCode.BadRequest, "Please pass a name on the query string or in the request body");
+                else if (picture.Valid != false)
+                {
+                    var updatedPicture = pictureController.UpdatePictureByPictureName(Rejected, false);
+                    return req.CreateResponse(HttpStatusCode.OK, $"{JsonConvert.SerializeObject(updatedPicture)}, picture rejected!");
+                }
             }
 
             return null;
         }
-
-        
     }
 }

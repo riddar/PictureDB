@@ -53,7 +53,7 @@ namespace Labb4.Services
 
         public Picture UpdatePicture(string pictureName, string pictureUrl, bool valid)
         {
-            picture = PictureController.UpdatePictureDocument(pictureName, pictureUrl, valid);
+            picture = PictureController.UpdatePictureByPictureName(pictureName, pictureUrl, valid);
             return picture;
         }
 

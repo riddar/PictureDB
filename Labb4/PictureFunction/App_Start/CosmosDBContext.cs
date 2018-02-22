@@ -11,9 +11,9 @@ namespace PictureFunction.App_Start
 {
     public class CosmosDBContext
     {
-        public readonly string EndpointUrl = "https://labb4.documents.azure.com:443";
-        public readonly string Authkey = "NAfqsGRxrU29aYUWXuDkippbMKgeuNyiux6ZCTHVHxeZG3Em8aTHs8A3Ckn2K9E1MuudWjpBiJUFYYQxi2n2Cw==";
-        public readonly string DatabaseName = "labb4";
+        public readonly string EndpointUrl = "https://picturedb.documents.azure.com:443/";
+        public readonly string Authkey = "cNKcjKztdIHcesct3cwYirohcuAuOHEEOGJRCLJHPq80X6hKYHXwJ3Ra101jj4dr48UlQD4yHuYHTjdkcFNLnA==";
+        public readonly string DatabaseName = "Labb4";
 
         public Database GetDatabaseByName(string databaseName)
         {

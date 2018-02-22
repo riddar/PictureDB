@@ -15,7 +15,7 @@ namespace Labb4.Controllers
     public class PictureUserController
     {
         CosmosDBContext Context = new CosmosDBContext();
-        PictureUser pictureUser = new PictureUser();
+        PictureUser _PictureUser = new PictureUser();
 
         public PictureUser CreatePictureUser(string userName, string email, List<string> pictureId)
         {
@@ -23,10 +23,9 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
-                        .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
+                    _PictureUser = GetPictureUserByUserName(userName);
 
-                    if (pictureUser == null)
+                    if (_PictureUser == null)
                     {
                         PictureUser newPictureUser = new PictureUser() { Username = userName, Email = email, PictureId = pictureId };
                         Client.CreateDocumentAsync(Context.GetCollectionByName("PictureUsers").SelfLink, newPictureUser);
@@ -34,13 +33,12 @@ namespace Labb4.Controllers
                     }
                     else
                     {
-                        return pictureUser;
+                        return _PictureUser;
                     }
                 }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -51,19 +49,18 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    List<PictureUser> list = new List<PictureUser>();
                     IEnumerable<PictureUser> pictureUsers = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink).AsEnumerable();
-                    foreach (var pictureUser in pictureUsers )
-                    {
-                        list.Add(pictureUser);
-                    }
-                    return list;
+
+                    if (pictureUsers == null)
+                        return null;
+
+                    return pictureUsers;
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
 
@@ -73,15 +70,14 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
+                    _PictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
                                             .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
 
-                    return pictureUser;
+                    return _PictureUser;
                 }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -100,43 +96,33 @@ namespace Labb4.Controllers
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
 
         }
 
-        public PictureUser UpdatePictureUserDocument(string userName, string email, List<string> pictureId)
+        public PictureUser UpdatePictureUserByUsername(string userName, string email, List<string> pictureId)
         {
             try
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
-                        .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
+                    _PictureUser = GetPictureUserByUserName(userName);
 
-                    if (pictureUser == null)
-                    {
-                        PictureUser newPictureUser = new PictureUser() { Username = userName, Email = email, PictureId = pictureId };
-                        Client.CreateDocumentAsync(Context.GetCollectionByName("PictureUsers").SelfLink, newPictureUser);
-                        return newPictureUser;
-                    }
-                    else
-                    {
-                        pictureUser.Username = userName;
-                        pictureUser.Email = email;
-                        pictureUser.PictureId = pictureId;
+                    if (_PictureUser == null)
+                        return null;
 
-                        Document document = GetDocumentById(pictureUser.Id);
+                    Document document = GetDocumentById(_PictureUser.Id);
+                    document.SetPropertyValue("Email", email);
+                    document.SetPropertyValue("PictureId", pictureId);
 
-                        Client.ReplaceDocumentAsync(document.SelfLink, pictureUser);
-                        return pictureUser;
-                    }
+                    Client.ReplaceDocumentAsync(document);
+
+                    return _PictureUser;
                 }
             }
             catch (Exception e)
             {
-                return null;
                 throw e;
             }
         }
@@ -148,28 +134,20 @@ namespace Labb4.Controllers
             {
                 using (DocumentClient Client = new DocumentClient(new Uri(Context.EndpointUrl), Context.Authkey))
                 {
-                    pictureUser = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink)
-                    .Where(d => d.Username == userName).AsEnumerable().FirstOrDefault();
+                    _PictureUser = GetPictureUserByUserName(userName);
+                    Document document = GetDocumentById(_PictureUser.Id);
 
-                    Document document = GetDocumentById(pictureUser.Id);
-
-                    if (pictureUser != null)
-                    {
-                        Client.DeleteDocumentAsync(document.SelfLink);
-                        return pictureUser;
-                    }
-                    else
-                    {
+                    if (_PictureUser == null)
                         return null;
-                    }
 
-                    
+                    Client.DeleteDocumentAsync(document.SelfLink);
+                    return _PictureUser;
                 }
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                throw e;
             }
         }
     }
