@@ -147,6 +147,8 @@ namespace Labb4.Controllers
 
                     client.ReplaceDocumentAsync(document);
 
+                    _picture = GetPictureByPictureName(pictureName);
+
                     return _picture;
                 }
             }

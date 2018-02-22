@@ -94,7 +94,7 @@ namespace Labb4.Controllers
 
         }
 
-        public void UpdatePasswordForAdminDocument(string adminName, string password)
+        public Admin UpdatePasswordForAdminDocument(string adminName, string password)
         {
             try
             {
@@ -106,6 +106,10 @@ namespace Labb4.Controllers
                     document.SetPropertyValue("Password", password);
 
                     Client.ReplaceDocumentAsync(document);
+
+                    _Admin = GetAdminByAdminName(adminName);
+
+                    return _Admin;
                 }
             }
             catch (Exception e)

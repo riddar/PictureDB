@@ -118,6 +118,8 @@ namespace Labb4.Controllers
 
                     Client.ReplaceDocumentAsync(document);
 
+                    _PictureUser = GetPictureUserByUserName(userName);
+
                     return _PictureUser;
                 }
             }
@@ -141,6 +143,7 @@ namespace Labb4.Controllers
                         return null;
 
                     Client.DeleteDocumentAsync(document.SelfLink);
+
                     return _PictureUser;
                 }
 
