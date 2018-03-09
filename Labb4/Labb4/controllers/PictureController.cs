@@ -29,6 +29,7 @@ namespace Labb4.Controllers
                     {
                         Picture newPicture = new Picture() {PictureName = pictureName, PictureUrl = pictureUrl, Valid = false };
                         Client.CreateDocumentAsync(Context.GetCollectionByName("Pictures").SelfLink, newPicture);
+                        _picture = GetPictureByPictureName(pictureName);
                         return newPicture;
                     }
                     else
@@ -141,9 +142,12 @@ namespace Labb4.Controllers
                 {
                     _picture = GetPictureByPictureName(pictureName);
 
+                    if (_picture == null)
+                        return null;
+
                     Document document = GetDocumentById(_picture.Id);
                     document.SetPropertyValue("PictureUrl", pictureUrl);
-                    document.SetPropertyValue("Valid", valid);
+                    document.SetPropertyValue("Valid", valid);  
 
                     client.ReplaceDocumentAsync(document);
 

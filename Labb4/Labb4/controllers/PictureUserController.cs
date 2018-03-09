@@ -29,6 +29,7 @@ namespace Labb4.Controllers
                     {
                         PictureUser newPictureUser = new PictureUser() { Username = userName, Email = email, PictureId = pictureId };
                         Client.CreateDocumentAsync(Context.GetCollectionByName("PictureUsers").SelfLink, newPictureUser);
+                        _PictureUser = GetPictureUserByUserName(userName);
                         return newPictureUser;
                     }
                     else
@@ -51,10 +52,14 @@ namespace Labb4.Controllers
                 {
                     IEnumerable<PictureUser> pictureUsers = Client.CreateDocumentQuery<PictureUser>(Context.GetCollectionByName("PictureUsers").SelfLink).AsEnumerable();
 
+                    List<PictureUser> list = new List<PictureUser>();
+
                     if (pictureUsers == null)
                         return null;
 
-                    return pictureUsers;
+                    foreach (var pictureUser in pictureUsers)
+                        list.Add(pictureUser);
+                    return list;
                 }
 
             }
@@ -142,7 +147,10 @@ namespace Labb4.Controllers
                     if (_PictureUser == null)
                         return null;
 
-                    Client.DeleteDocumentAsync(document.SelfLink);
+                   var result = Client.DeleteDocumentAsync(document.SelfLink);
+
+                    if (result.Result == null)
+                        return null;
 
                     return _PictureUser;
                 }

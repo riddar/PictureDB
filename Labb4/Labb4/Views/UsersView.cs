@@ -115,24 +115,24 @@ namespace Labb4.Views
                 if (valid == null)
                     Console.WriteLine($"{valid.PictureName} already Created.");
                 else
-                    Console.WriteLine($"{valid.PictureName} Created!");
-            
+                    Console.WriteLine($"{valid.PictureName} Created!");       
         }
 
         public void PrintAddPicture(string user)
         {
-                Console.WriteLine("-----------------------------------");
-                Console.WriteLine("Which picture would you like to add to the list?");
-                Console.Write("picture name: ");
-                var pictureName = Console.ReadLine();
+            Console.WriteLine("-----------------------------------");
+            Console.WriteLine("Which picture would you like to add to the list?");
+            Console.Write("picture name: ");
+            var pictureName = Console.ReadLine();
 
-                var valid = service.AddExistingPictureToPictureUserByUserName(user, pictureName);
+            var valid = service.AddExistingPictureToPictureUserByUserName(user, pictureName);
 
-                if (valid != null)
-                    Console.WriteLine($"{valid.PictureName} Added!");
-                else
-                    Console.WriteLine($"{valid.PictureName} already Added.");
-                Console.ReadKey();
+            if (valid != null)
+            {
+                Console.WriteLine($"{valid.Username} Added!");
+            }
+            else
+                Console.WriteLine($"{valid.Username} already Added.");
             
         }
 

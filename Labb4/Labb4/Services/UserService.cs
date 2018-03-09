@@ -48,7 +48,7 @@ namespace Labb4.Services
             }
         }
 
-        public Picture AddExistingPictureToPictureUserByUserName(string UserName, string PictureName)
+        public PictureUser AddExistingPictureToPictureUserByUserName(string UserName, string PictureName)
         {
             try
             {
@@ -59,9 +59,11 @@ namespace Labb4.Services
                     pictureUser.PictureId.Add(picture.Id);
 
                     PictureUser updatedPictureUser = pictureUserController.UpdatePictureUserByUsername(pictureUser.Username, pictureUser.Email, pictureUser.PictureId);
-                }
 
-                return picture;
+                    pictureUser = pictureUserController.GetPictureUserByUserName(UserName);
+
+                    return pictureUser;
+                }
             }
             catch (Exception e)
             {
@@ -95,8 +97,7 @@ namespace Labb4.Services
 
         public Picture UpdatePictureOfUser(string userName, string pictureName, string pictureUrl)
         {
-            bool valid = false;
-            picture = pictureController.UpdatePictureByPictureName(pictureName, pictureUrl, valid);
+            picture = pictureController.UpdatePictureByPictureName(pictureName, pictureUrl, false);
 
             return picture;
         }
